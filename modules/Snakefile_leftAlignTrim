@@ -1,0 +1,35 @@
+#!/usr/bin/python
+
+rule split_multiallelic:
+    input:
+        'vcf_chunks/{chunk}.vcf'
+    output:
+        'split_multiallelic_vcf_chunks/{chunk}.vcf'
+    params:
+        module = 'module load vcflib/v1.0.0-rc0-331-g7e3d806'
+    shell:
+        '{params.module};vcfbreakmulti {input} > {output}'
+
+
+rule left_align_trim:
+    input:
+        'split_multiallelic_vcf_chunks/{chunk}.vcf'
+    output:
+        'left_align_trim/{chunk}.vcf'
+    params:
+        module = 'module load GATK/3.8-0',
+        ref = config['REF']
+    shell:
+        '{params.module};GATK -m 4g LeftAlignAndTrimVariants -R {params.ref} --variant {input} -o {output}'
+
+rule sort_min_rep_vcf:
+    input:
+        'left_align_trim/{chunk}.vcf'
+    output:
+        'sorted_min_rep_vcf_chunks/{chunk}.vcf'
+    params:
+        module = 'module load IGVTools/2.3.98'
+    shell:
+        '{params.module};java -Xmx9g -Djava.awt.headless=true -jar $IGVTOOLS_JAR sort -m 100000 -t $TMPDIR {input} {output}'
+
+
