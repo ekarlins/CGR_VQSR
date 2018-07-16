@@ -2,7 +2,7 @@
 
 rule split_multiallelic:
     input:
-        'vcf_parts/{part}.vcf'
+        config['HC_parts_dir'] + '/variant_part_{part}.vcf'
     output:
         'split_multiallelic_vcf_parts/{part}.vcf'
     params:
