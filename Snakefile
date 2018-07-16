@@ -47,10 +47,7 @@ for chrom in CHROMOSOMES:
             CHUNKS.append('.'.join([chrom, start, end]))
 
 
-include: 'modules/Snakefile_splitVcf'
-include: 'modules/Snakefile_avinput'
-include: 'modules/Snakefile_InterVar'
-include: 'modules/Snakefile_annotate'
+include: 'modules/Snakefile_leftAlignTrim'
 
 rule all:
     input:
