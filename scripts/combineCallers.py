@@ -15,6 +15,7 @@ def makeVariantDict(vcfFile):
             line = f.readline()
         line = f.readline()
         while line != '':
+            line_list = line.split()
             (chrom, pos, snp, ref, alt) = line_list[:5]
             variantDict[(chrom, pos, ref, alt)] = 1
             line = f.readline()
