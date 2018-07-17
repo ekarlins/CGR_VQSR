@@ -21,9 +21,13 @@ for vcf in sorted(glob.glob(config['HC_parts_dir']) + '/*.vcf'):
     part = os.path.basename(vcf)[:-4].split('_')[-1]
     PARTS.append(part)
 
+VariantTypes = ['SNP', 'INDEL']
+
+
 include: 'modules/Snakefile_leftAlignTrim'
+include: 'modules/Snakefile_add_set'
 
 rule all:
     input:
-        'variants_VQSR_input.vcf.gz.tbi'
+        expand('{varType}_combined/variants.vcf.gz.tbi', varType = VariantTypes)
 
