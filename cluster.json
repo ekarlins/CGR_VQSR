@@ -1,0 +1,82 @@
+{
+    "__default__" :
+    {
+        "time" : "01:00:00",
+        "partition" : "quick",
+        "mem"  : "2g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"
+    },
+    "run_intervar" :
+    {
+        "time" : "04:00:00",
+        "partition" : "quick",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "cat_annotated_vcf_chunks" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "2g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "bgzip_annotated_vcf" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "tabix_annotated_vcf" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "cat_intervar" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "2g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "bgzip_bed" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "tabix_bed" :
+    {
+        "time" : "24:00:00",
+        "partition" : "norm",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "sort_min_rep_vcf" :
+    {
+        "time" : "04:00:00",
+        "partition" : "quick",
+        "mem"  : "10g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    },
+    "left_align_trim" :
+    {
+        "time" : "04:00:00",
+        "partition" : "quick",
+        "mem"  : "5g",
+	"extra": "",
+        "out"  : "logs/{rule}-%j.out"    
+    }
+}
