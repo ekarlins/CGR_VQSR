@@ -2,9 +2,9 @@
 
 rule split_multiallelic:
     input:
-        config['HC_parts_dir'] + '/variant_part_{part}.vcf'
+        config['{caller}_parts_dir'] + '/variant_part_{part}.vcf'
     output:
-        'split_multiallelic_vcf_parts/{part}.vcf'
+        '{caller}_split_multiallelic_vcf_parts/{part}.vcf'
     params:
         module = 'module load vcflib/v1.0.0-rc0-331-g7e3d806'
     shell:
@@ -13,9 +13,9 @@ rule split_multiallelic:
 
 rule left_align_trim:
     input:
-        'split_multiallelic_vcf_parts/{part}.vcf'
+        '{caller}_split_multiallelic_vcf_parts/{part}.vcf'
     output:
-        'left_align_trim/{part}.vcf'
+        '{caller}_left_align_trim/{part}.vcf'
     params:
         module = 'module load GATK/3.8-0',
         ref = config['REF']
@@ -24,9 +24,9 @@ rule left_align_trim:
 
 rule sort_min_rep_vcf:
     input:
-        'left_align_trim/{part}.vcf'
+        '{caller}_left_align_trim/{part}.vcf'
     output:
-        'sorted_min_rep_vcf_parts/{part}.vcf'
+        '{caller}_sorted_min_rep_vcf_parts/{part}.vcf'
     params:
         module = 'module load IGVTools/2.3.98'
     shell:
