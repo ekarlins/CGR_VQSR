@@ -1,0 +1,14 @@
+#!/usr/bin/python
+
+rule sort_min_rep_vcf:
+    input:
+        first = CALLERS[0] + '_sorted_min_rep_vcf_parts/{part}.vcf',
+        rest = expand('{caller}_sorted_min_rep_vcf_parts/{part}.vcf', caller = CALLERS[1:])
+    output:
+        snp = 'SNP_parts/{part}.vcf',
+        indel = 'INDEL_parts/{part}.vcf'
+    params:
+        module = 'module load python/2.7'
+    shell:
+        '{params.module};python scripts/combineCallers.py {input.first} {input.rest} {output.snp} {output.indel}'
+
