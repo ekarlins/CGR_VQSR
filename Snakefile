@@ -24,6 +24,11 @@ for vcf in sorted(glob.glob(config['HC_parts_dir'] + '/*.vcf')):
 VariantTypes = ['SNP', 'INDEL']
 
 
+
+def getStartVcf(wildcards):
+    return config[wildcards.caller + '_parts_dir'] + '/variant_part_' + wildcards.part + '.vcf'
+
+
 include: 'modules/Snakefile_leftAlignTrim'
 include: 'modules/Snakefile_add_set'
 

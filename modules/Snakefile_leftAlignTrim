@@ -2,7 +2,7 @@
 
 rule split_multiallelic:
     input:
-        config['{caller}_parts_dir'] + '/variant_part_{part}.vcf'
+        getStartVcf
     output:
         '{caller}_split_multiallelic_vcf_parts/{part}.vcf'
     params:
