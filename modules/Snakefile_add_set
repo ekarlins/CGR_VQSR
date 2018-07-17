@@ -1,14 +1,54 @@
 #!/usr/bin/python
 
-rule sort_min_rep_vcf:
+rule add_leftAlignSet:
     input:
-        first = CALLERS[0] + '_sorted_min_rep_vcf_parts/{part}.vcf',
-        rest = expand('{caller}_sorted_min_rep_vcf_parts/{part}.vcf', caller = CALLERS[1:])
+        expand('{caller}_sorted_min_rep_vcf_parts/{part}.vcf', caller = CALLERS)
     output:
         snp = 'SNP_parts/{part}.vcf',
         indel = 'INDEL_parts/{part}.vcf'
     params:
         module = 'module load python/2.7'
-    shell:
-        '{params.module};python scripts/combineCallers.py {input.first} {input.rest} {output.snp} {output.indel}'
+    run:
+        inputVcfs = []
+        for caller in CALLERS:
+            inputVcfs.append(caller + '_sorted_min_rep_vcf_parts/{part}.vcf')
+        shell('{params.module};python scripts/combineCallers.py ' + ' '.join(CALLERS) + ' ' + ' '.join(inputVcfs) + ' {output.snp} {output.indel}')
 
+rule combine_parts:
+    input:
+        sorted(expand('{varType}_parts/{part}.vcf', part = PARTS))
+    output:
+        '{varType}_combined/variants.vcf'
+    run:
+        with open(output[0], 'w') as out:
+            with open(input[0]) as f:
+                for line in f:
+                    out.write(line)
+            for partVcf in input[1:]:
+                with open(partVcf) as f:
+                    line = f.readline()
+                    while line != '' and line[0] == '#':
+                        line = f.readline()
+                    while line != '':
+                        out.write(line)
+                        line = f.readline()
+
+rule bgzip_combined_vcf:
+    input:
+        '{varType}_combined/variants.vcf'
+    output:
+        '{varType}_combined/variants.vcf.gz'
+    params:
+        module = 'module load samtools/1.8'
+    shell:
+        '{params.module};bgzip {input}'
+
+rule tabix_annotated_vcf:
+    input:
+        '{varType}_combined/variants.vcf.gz'
+    output:
+        '{varType}_combined/variants.vcf.gz.tbi'
+    params:
+        module = 'module load samtools/1.8'
+    shell:
+        '{params.module};tabix -p vcf {input}'
