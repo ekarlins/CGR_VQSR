@@ -14,6 +14,8 @@ from snakemake.utils import R
 
 configfile: "config.yaml"
 
+CALLERS = ['HC', 'FB', 'UG']
+
 PARTS = []
 for vcf in sorted(glob.glob(config['HC_parts_dir']) + '/*.vcf'):
     part = os.path.basename(vcf)[:-4].split('_')[-1]
