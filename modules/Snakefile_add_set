@@ -2,7 +2,7 @@
 
 rule add_leftAlignSet:
     input:
-        expand('{caller}_sorted_min_rep_vcf_parts/{part}.vcf', caller = CALLERS)
+        expand('{caller}_sorted_min_rep_vcf_parts/{{part}}.vcf', caller = CALLERS)
     output:
         snp = 'SNP_parts/{part}.vcf',
         indel = 'INDEL_parts/{part}.vcf'
@@ -11,7 +11,7 @@ rule add_leftAlignSet:
     run:
         inputVcfs = []
         for caller in CALLERS:
-            inputVcfs.append(caller + '_sorted_min_rep_vcf_parts/{part}.vcf')
+            inputVcfs.append(caller + '_sorted_min_rep_vcf_parts/' + wildcards.part + '.vcf')
         shell('{params.module};python scripts/combineCallers.py ' + ' '.join(CALLERS) + ' ' + ' '.join(inputVcfs) + ' {output.snp} {output.indel}')
 
 rule combine_parts:
