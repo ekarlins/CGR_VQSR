@@ -60,7 +60,7 @@ def outputAnnotated(callerList, snpOut, indelOut):
                     callerSet.append(varCaller)
             leftAlignSet = ','.join(sorted(callerSet))
             info = line_list[7]
-            line_list[7] = info + ';' + leftAlignSet
+            line_list[7] = info + ';leftAlignSet=' + leftAlignSet
             if isSnp:
                 outputSnp.write('\t'.join(line_list) + '\n')
             else:
