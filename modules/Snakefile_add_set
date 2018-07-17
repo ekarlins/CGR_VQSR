@@ -16,7 +16,7 @@ rule add_leftAlignSet:
 
 rule combine_parts:
     input:
-        sorted(expand('{varType}_parts/{part}.vcf', part = PARTS))
+        sorted(expand('{{varType}}_parts/{part}.vcf', part = PARTS))
     output:
         '{varType}_combined/variants.vcf'
     run:
