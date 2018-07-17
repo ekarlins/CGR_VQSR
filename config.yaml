@@ -1,5 +1,5 @@
 UG_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcfs/UG/raw_variant_parts_reordered
 HC_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcfs/HC/raw_variant_parts_by_bed_reordered
-FP_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcfs/FB/raw_variant_parts_reordered
+FB_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcfs/FB/raw_variant_parts_reordered
 size: files/hg19.chrom.sizes
 REF: /fdb/GATK_resource_bundle/hg19-2.8/ucsc.hg19.fasta
