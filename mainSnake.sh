@@ -2,7 +2,7 @@
 
 module load python/3.5
 cd $PWD
-mkdir logs
+mkdir -p logs
 sbcmd="sbatch --cpus-per-task={threads} --mem={cluster.mem}"
 sbcmd+=" --time={cluster.time} --partition={cluster.partition}"
 sbcmd+=" --out={cluster.out} {cluster.extra}"
