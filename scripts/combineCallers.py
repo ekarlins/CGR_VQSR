@@ -7,6 +7,41 @@ both /path/to/SNP.out.vcf and /path/to/INDEL.out.vcf will have a variable called
 Caller1 Caller2 CallerN will be the name used in "leftAlignSet". So these should be something like "HC", "FB", "UG".
 '''
 
+
+def getHetAd(format, genotypes):
+    '''
+    (str, list) -> str
+    '''
+    altSum = 0
+    totSum = 0
+    gtCol = None
+    adCol = None
+    format_list = format.split(':')
+    for i in range(len(format_list)):
+        if format_list[i] == 'GT':
+            gtCol = i
+        elif format_list[i] == 'AD':
+            adCol = i
+    if gtCol == None or adCol == None:
+        print('FORMAT field incorrect')
+        sys.exit(1)
+    for geno in genotypes:
+        geno_list = geno.split(':')
+        gt = geno_list[gtCol]
+        ad = geno_list[adCol]
+        if gt == '0/1':
+            ad_list = ad.split(',')
+            refCount = int(ad_list[0])
+            altCount = int(ad_list[1])
+            altSum += altCount
+            totSum += refCount + altCount
+    if altSum == 0 or totSum == 0:
+        return ''
+    else:
+        return str(float(altSum)/float(totSum))
+
+
+
 def makeVariantDict(vcfFile):
     variantDict = {}
     with open(vcfFile) as f:
@@ -42,8 +77,10 @@ def outputAnnotated(callerList, snpOut, indelOut):
             outputIndel.write(line)
             line = f.readline()
         outputSnp.write('##INFO=<ID=leftAlignSet,Number=.,Type=String,Description="list of variant callers that called variant, matched on left align trimmed VCF files">\n')
+        outputSnp.write('##INFO=<ID=hetAltAB,Number=1,Type=Float,Description="(ALT AD)/(TOT AD) summed at het sites.">\n')
         outputSnp.write(line)
         outputIndel.write('##INFO=<ID=leftAlignSet,Number=.,Type=String,Description="list of variant callers that called variant, matched on left align trimmed VCF files">\n')
+        outputIndel.write('##INFO=<ID=hetAltAB,Number=1,Type=Float,Description="(ALT AD)/(TOT AD) summed at het sites.">\n')
         outputIndel.write(line)
         line = f.readline()
         while line != '':
@@ -59,8 +96,14 @@ def outputAnnotated(callerList, snpOut, indelOut):
                 if varDict.get((chrom, pos, ref, alt)):
                     callerSet.append(varCaller)
             leftAlignSet = ','.join(sorted(callerSet))
+            format = line_list[8]
+            genotypes = line_list[9:]
+            hetAB = getHetAd(format, genotypes)
             info = line_list[7]
-            line_list[7] = info + ';leftAlignSet=' + leftAlignSet
+            if hetAB == '':
+                line_list[7] = info + ';leftAlignSet=' + leftAlignSet
+            else:
+                line_list[7] = info + ';leftAlignSet=' + leftAlignSet + ';hetAltAB=' + hetAB
             if isSnp:
                 outputSnp.write('\t'.join(line_list) + '\n')
             else:
