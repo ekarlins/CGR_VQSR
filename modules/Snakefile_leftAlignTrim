@@ -10,17 +10,28 @@ rule split_multiallelic:
     shell:
         '{params.module};vcfbreakmulti {input} > {output}'
 
+rule vcf_index:
+    input:
+        '{caller}_split_multiallelic_vcf_parts/{part}.vcf'
+    output:
+        '{caller}_split_multiallelic_vcf_parts/{part}.vcf.idx'
+    params:
+        module = 'module load igvtools/2.3.98'
+    shell:
+        '{params.module};igvtools index {input}'
+
 
 rule left_align_trim:
     input:
-        '{caller}_split_multiallelic_vcf_parts/{part}.vcf'
+        vcf = '{caller}_split_multiallelic_vcf_parts/{part}.vcf',
+        index = '{caller}_split_multiallelic_vcf_parts/{part}.vcf.idx'
     output:
         '{caller}_left_align_trim/{part}.vcf'
     params:
         module = 'module load GATK/3.8-0',
         ref = config['REF']
     shell:
-        '{params.module};GATK -m 4g LeftAlignAndTrimVariants -R {params.ref} --variant {input} -o {output}'
+        '{params.module};GATK -m 4g LeftAlignAndTrimVariants -R {params.ref} --variant {input.vcf} -o {output}'
 
 rule sort_min_rep_vcf:
     input:
