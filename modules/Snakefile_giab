@@ -21,7 +21,7 @@ rule combine_parts_giab:
     input:
         sorted(expand('{{varType}}_parts_{{giabSamp}}/{part}.vcf', part = PARTS))
     output:
-        '{varType}_combined_{{giabSamp}}/variants.vcf'
+        '{varType}_combined_{giabSamp}/variants.vcf'
     run:
         with open(output[0], 'w') as out:
             with open(input[0]) as f:
