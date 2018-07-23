@@ -4,7 +4,7 @@ rule select_giab_fp:
     input:
         snp = 'SNP_parts/{part}.vcf',
         indel = 'INDEL_parts/{part}.vcf',
-        giab_vcf = getGiabVcf
+        giab_vcf = getGiabVcf,
         giab_bed = getGiabBed
     output:
         snp = 'GiabFP_SNP_parts_{giabSamp}/{part}.vcf',
