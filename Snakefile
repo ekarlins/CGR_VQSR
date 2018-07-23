@@ -22,7 +22,7 @@ for vcf in sorted(glob.glob(config['HC_parts_dir'] + '/*.vcf')):
     PARTS.append(part)
 
 VariantTypes = ['SNP', 'INDEL']
-
+GIAB_SAMPLES = config['giab_sample_dict'].keys()
 
 
 def getStartVcf(wildcards):
@@ -34,5 +34,6 @@ include: 'modules/Snakefile_add_set'
 
 rule all:
     input:
-        expand('{varType}_combined/variants.vcf.gz.tbi', varType = VariantTypes)
+        expand('{varType}_combined/variants.vcf.gz.tbi', varType = VariantTypes),
+        expand('{varType}_combined_{giabSamp}/variants.vcf.gz.tbi', varType = VariantTypes, giabSamp = GIAB_SAMPLES)
 

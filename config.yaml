@@ -3,3 +3,7 @@ HC_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcf
 FB_parts_dir: /data/karlinser/OsteoExome/build_Osteosarcoma_2017_18794/parts_vcfs/FB/raw_variant_parts_reordered
 size: files/hg19.chrom.sizes
 REF: /fdb/GATK_resource_bundle/hg19-2.8/ucsc.hg19.fasta
+giab_sample_dict: {'NA12878':['CTRL_NA12878_GDNA_HS4K_KHPL_2', 'CTRL_NA12878_GDNA_HSV4_KHPL_2'], 'NA24143':['CTRL_NA24143_GDNA_HS4K_KHPL_2', 'CTRL_NA24143_GDNA_HSV4_KHPL_2'], 
+'NA24149':['CTRL_NA24149_GDNA_HS4K_KHPL_2', 'CTRL_NA24149_GDNA_HSV4_KHPL_2'], 'NA24385':['CTRL_NA24385_GDNA_HS4K_KHPL_2', 'CTRL_NA24385_GDNA_HSV4_KHPL_2']}
+giab_vcf_dir: /data/karlinser/GiabSplitMulti/final
+giab_bed_dir: /data/karlinser/referenceFiles/giab/hg19_bed_files

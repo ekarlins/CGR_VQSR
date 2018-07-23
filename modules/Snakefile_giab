@@ -16,3 +16,44 @@ rule select_giab_fp:
         vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
         shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
         
+
+rule combine_parts_giab:
+    input:
+        sorted(expand('{{varType}}_parts_{{giabSamp}}/{part}.vcf', part = PARTS))
+    output:
+        '{varType}_combined_{{giabSamp}}/variants.vcf'
+    run:
+        with open(output[0], 'w') as out:
+            with open(input[0]) as f:
+                for line in f:
+                    out.write(line)
+            for partVcf in input[1:]:
+                with open(partVcf) as f:
+                    line = f.readline()
+                    while line != '' and line[0] == '#':
+                        line = f.readline()
+                    while line != '':
+                        out.write(line)
+                        line = f.readline()
+
+
+rule bgzip_combined_giab_vcf:
+    input:
+        '{varType}_combined_{giabSamp}/variants.vcf'
+    output:
+        '{varType}_combined_{giabSamp}/variants.vcf.gz'
+    params:
+        module = 'module load samtools/1.8'
+    shell:
+        '{params.module};bgzip {input}'
+
+rule tabix_annotated_giab_vcf:
+    input:
+        '{varType}_combined_{giabSamp}/variants.vcf.gz'
+    output:
+        '{varType}_combined_{giabSamp}/variants.vcf.gz.tbi'
+    params:
+        module = 'module load samtools/1.8'
+    shell:
+        '{params.module};tabix -p vcf {input}'
+
