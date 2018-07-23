@@ -19,9 +19,9 @@ rule select_giab_fp:
 
 rule combine_parts_giab:
     input:
-        sorted(expand('{{varType}}_parts_{{giabSamp}}/{part}.vcf', part = PARTS))
+        sorted(expand('GiabFP_{{varType}}_parts_{{giabSamp}}/{part}.vcf', part = PARTS))
     output:
-        '{varType}_combined_{giabSamp}/variants.vcf'
+        'GiabFP_{varType}_combined_{giabSamp}/variants.vcf'
     run:
         with open(output[0], 'w') as out:
             with open(input[0]) as f:
@@ -39,9 +39,9 @@ rule combine_parts_giab:
 
 rule bgzip_combined_giab_vcf:
     input:
-        '{varType}_combined_{giabSamp}/variants.vcf'
+        'GiabFP_{varType}_combined_{giabSamp}/variants.vcf'
     output:
-        '{varType}_combined_{giabSamp}/variants.vcf.gz'
+        'GiabFP_{varType}_combined_{giabSamp}/variants.vcf.gz'
     params:
         module = 'module load samtools/1.8'
     shell:
@@ -49,9 +49,9 @@ rule bgzip_combined_giab_vcf:
 
 rule tabix_annotated_giab_vcf:
     input:
-        '{varType}_combined_{giabSamp}/variants.vcf.gz'
+        'GiabFP_{varType}_combined_{giabSamp}/variants.vcf.gz'
     output:
-        '{varType}_combined_{giabSamp}/variants.vcf.gz.tbi'
+        'GiabFP_{varType}_combined_{giabSamp}/variants.vcf.gz.tbi'
     params:
         module = 'module load samtools/1.8'
     shell:
