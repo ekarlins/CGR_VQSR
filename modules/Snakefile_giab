@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+rule select_giab_fp:
+    input:
+        snp = 'SNP_parts/{part}.vcf',
+        indel = 'INDEL_parts/{part}.vcf',
+        giab_vcf = getGiabVcf
+        giab_bed = getGiabBed
+    output:
+        snp = 'GiabFP_SNP_parts_{giabSamp}/{part}.vcf',
+        indel = 'GiabFP_INDEL_parts_{giabSamp}/{part}.vcf'
+    params:
+        module = 'module load GATK/3.8-0',
+        ref = config['REF']
+    run:
+        vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
+        
