@@ -22,18 +22,25 @@ for vcf in sorted(glob.glob(config['HC_parts_dir'] + '/*.vcf')):
     PARTS.append(part)
 
 VariantTypes = ['SNP', 'INDEL']
-GIAB_SAMPLES = config['giab_sample_dict'].keys()
+GiabSampleDict = config['giab_sample_dict']
 
 
 def getStartVcf(wildcards):
     return config[wildcards.caller + '_parts_dir'] + '/variant_part_' + wildcards.part + '.vcf'
 
+def getGiabVcf(wildcards):
+    return config['giab_vcf_dir'] + '/' + wildcards.giabSamp + '.vcf.gz'
+
+def getGiabBed(wildcards):
+    return config['giab_bed_dir'] + '/'+ wildcards.giabSamp + '.hg19.bed'
+
 
 include: 'modules/Snakefile_leftAlignTrim'
 include: 'modules/Snakefile_add_set'
+include: 'modules/Snakefile_giab'
 
 rule all:
     input:
         expand('{varType}_combined/variants.vcf.gz.tbi', varType = VariantTypes),
-        expand('{varType}_combined_{giabSamp}/variants.vcf.gz.tbi', varType = VariantTypes, giabSamp = GIAB_SAMPLES)
+        expand('{varType}_combined_{giabSamp}/variants.vcf.gz.tbi', varType = VariantTypes, giabSamp = GiabSampleDict.keys())
 
