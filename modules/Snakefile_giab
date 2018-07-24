@@ -10,7 +10,7 @@ rule select_giab_fp:
         snp = 'GiabFP_SNP_parts_{giabSamp}/{part}.vcf',
         indel = 'GiabFP_INDEL_parts_{giabSamp}/{part}.vcf'
     params:
-        module = 'module load GATK/3.8-0',
+        module = 'module load GATK/3.8-1',
         ref = config['REF']
     run:
         vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]

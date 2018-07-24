@@ -1,7 +1,7 @@
 {
     "__default__" :
     {
-        "time" : "01:00:00",
+        "time" : "04:00:00",
         "partition" : "quick",
         "mem"  : "2g",
 	"extra": "",
@@ -46,5 +46,13 @@
         "mem"  : "5g",
 	"extra": "",
         "out"  : "logs/{rule}-%j.out"    
+    },
+    "select_giab_fp" :
+    {
+        "time" : "04:00:00",
+        "partition" : "quick",
+        "mem"  : "5g",
+        "extra": "",
+        "out"  : "logs/{rule}-%j.out"
     }
 }
