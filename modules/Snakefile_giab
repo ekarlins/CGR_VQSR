@@ -15,6 +15,7 @@ rule select_giab_fp:
     run:
         vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
         shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.indel} -sn ' + ' -sn '.join(vcfKeepSamps))
         
 
 rule combine_parts_giab:
