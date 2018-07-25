@@ -59,7 +59,7 @@
     {
         "time" : "2-00:00:00",
         "partition" : "norm",
-        "mem"  : "64g",
+        "mem"  : "10g",
         "extra": "",
         "out"  : "logs/{rule}-%j.out"
     }
