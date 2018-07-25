@@ -54,5 +54,12 @@
         "mem"  : "5g",
         "extra": "",
         "out"  : "logs/{rule}-%j.out"
-    }
+    },
+    "merge_giab_vcfs" :
+    {
+        "time" : "2-00:00:00",
+        "partition" : "norm",
+        "mem"  : "64g",
+        "extra": "",
+        "out"  : "logs/{rule}-%j.out"
 }
