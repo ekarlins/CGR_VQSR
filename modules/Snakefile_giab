@@ -58,3 +58,17 @@ rule tabix_annotated_giab_vcf:
     shell:
         '{params.module};tabix -p vcf {input}'
 
+
+
+rule merge_giab_vcfs:
+    input:
+        vcfs = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz', giabSamp = GiabSampleDict.keys()),
+        tabix = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz.tbi', giabSamp = GiabSampleDict.keys())
+    output:
+        'GiabFP_{{varType}}_combined_AllSamps/variants.vcf.gz'
+    params:
+        module = 'module load GATK/3.8-1',
+        ref = config['REF']
+    run:
+        vcfList = ' --variant '.join(input.vcfs)
+        shell('{params.module};GATK -m 50g -T CombineVariants -R {params.ref} --variant ' + vcfList + ' -o {output} -nt 4 -genotypeMergeOptions REQUIRE_UNIQUE')
