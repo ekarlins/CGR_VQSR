@@ -65,7 +65,7 @@ rule merge_giab_vcfs:
         vcfs = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz', giabSamp = GiabSampleDict.keys()),
         tabix = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz.tbi', giabSamp = GiabSampleDict.keys())
     output:
-        'GiabFP_{{varType}}_combined_AllSamps/variants.vcf.gz'
+        'GiabFP_{varType}_final/variants.vcf.gz'
     params:
         module = 'module load GATK/3.8-1',
         ref = config['REF']
