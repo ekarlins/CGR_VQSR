@@ -62,4 +62,5 @@
         "mem"  : "64g",
         "extra": "",
         "out"  : "logs/{rule}-%j.out"
+    }
 }
