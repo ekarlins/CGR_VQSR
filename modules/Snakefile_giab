@@ -71,4 +71,4 @@ rule merge_giab_vcfs:
         ref = config['REF']
     run:
         vcfList = ' --variant '.join(input.vcfs)
-        shell('{params.module};GATK -m 50g -T CombineVariants -R {params.ref} --variant ' + vcfList + ' -o {output} -nt 4 -genotypeMergeOptions REQUIRE_UNIQUE')
+        shell('{params.module};GATK -m 50g CombineVariants -R {params.ref} --variant ' + vcfList + ' -o {output} -nt 4 -genotypeMergeOptions REQUIRE_UNIQUE')
