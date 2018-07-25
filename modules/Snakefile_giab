@@ -59,16 +59,50 @@ rule tabix_annotated_giab_vcf:
         '{params.module};tabix -p vcf {input}'
 
 
-
+##GATK CombineVariants makes multi-allelic variants, so I'm going to do something else.
 rule merge_giab_vcfs:
     input:
         vcfs = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz', giabSamp = GiabSampleDict.keys()),
         tabix = expand('GiabFP_{{varType}}_combined_{giabSamp}/variants.vcf.gz.tbi', giabSamp = GiabSampleDict.keys())
     output:
-        'GiabFP_{varType}_final/variants.vcf.gz'
-    params:
-        module = 'module load GATK/3.8-1',
-        ref = config['REF']
+        'GiabFP_{varType}_final/variants.vcf'
     run:
-        vcfList = ' --variant '.join(input.vcfs)
-        shell('{params.module};GATK -m 50g CombineVariants -R {params.ref} --variant ' + vcfList + ' -o {output} -nt 4 -genotypeMergeOptions REQUIRE_UNIQUE')
+        vcfTabList = []
+        for vcf in input.vcfs:
+            vcfTabList.append(pysam.TabixFile(vcf))
+        for vcf in vcfTabList[1:]:
+            if vcf.contigs != vcfTabList[0].contigs:
+                print('vcf files do not have the same chromosomes')
+                sys.exit(1)
+        with open(output[0], 'w') as out:
+            for line in vcf1.header:
+                if not line.startswith('#CHROM'):
+                    out.write(line)
+                line_list = line.split()
+                out.write('\t'.join(line_list[:8]) + '\n')
+            for chrom in vcfTabList[0].contigs:
+                posDict = {}
+                for vcf in vcfTabList:
+                    for line in vcf.fetch(chrom):
+                        line_list = line.split()
+                        (chrom, posStr, snp, ref, alt) = line_list[:5]
+                        pos = int(posStr)
+                        posDict[pos] = (ref, alt)
+                for pos in sorted(posDict.keys()):
+                    (ref, alt) = posDict[pos]
+                    out.write('\t'.join([chrom, str(pos), '.', ref, alt, '.', '.', '.']) + '\n')
+        for vcf in vcfTabList:
+            vcf.close()
+
+
+rule merged_giab_tabix:
+    input:
+        'GiabFP_{varType}_final/variants.vcf'
+    output:
+        vcf = 'GiabFP_{varType}_final/variants.vcf.gz',
+        tab = 'GiabFP_{varType}_final/variants.vcf.gz.tbi'
+    params:
+        module = 'module load samtools/1.8'
+    shell:
+        '{params.module};bgzip {input};tabix -p vcf {input}.gz'
+
