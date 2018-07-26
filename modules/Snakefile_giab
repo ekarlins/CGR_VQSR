@@ -70,26 +70,41 @@ rule merge_giab_vcfs:
         vcfTabList = []
         for vcf in input.vcfs:
             vcfTabList.append(pysam.TabixFile(vcf))
-        for vcf in vcfTabList[1:]:
-            if vcf.contigs != vcfTabList[0].contigs:
-                print('vcf files do not have the same chromosomes')
-                sys.exit(1)
+        vcfChromDict = {}
+        for vcf in vcfTabList:
+            for chrom in vcf.contigs:
+                if chrom.startswith('chr'):
+                    check = chrom[3:]
+                else:
+                    check = chrom
+                if check.isdigit():
+                    vcfChromDict[check] = chrom
+                elif check == 'X':
+                    vcfChromDict[23] = chrom
+                elif check == 'Y':
+                    vcfChromDict[24] = chrom
+                elif check[0] == 'M':
+                    vcfChromDict[25] = chrom
+                else:
+                    print('unrecognized chromosome ' + chrom)
+                    sys.exit(1)
         with open(output[0], 'w') as out:
             for line in vcf1.header:
                 if not line.startswith('#CHROM'):
                     out.write(line)
                 line_list = line.split()
                 out.write('\t'.join(line_list[:8]) + '\n')
-            for chrom in vcfTabList[0].contigs:
+            for num in sorted(vcfChromDict.keys()):
+                chrom = vcfChromDict[num]
                 posDict = {}
                 for vcf in vcfTabList:
-                    for line in vcf.fetch(chrom):
-                        line_list = line.split()
-                        (chrom, posStr, snp, ref, alt) = line_list[:5]
-                        pos = int(posStr)
-                        posDict[pos] = (ref, alt)
-                for pos in sorted(posDict.keys()):
-                    (ref, alt) = posDict[pos]
+                    if chrom in vcf.contigs:
+                        for line in vcf.fetch(chrom):
+                            line_list = line.split()
+                            (chrom, posStr, snp, ref, alt) = line_list[:5]
+                            pos = int(posStr)
+                            posDict[(pos, ref, alt)] = 1
+                for (pos, ref, alt) in sorted(posDict.keys()):
                     out.write('\t'.join([chrom, str(pos), '.', ref, alt, '.', '.', '.']) + '\n')
         for vcf in vcfTabList:
             vcf.close()
