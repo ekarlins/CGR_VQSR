@@ -89,7 +89,7 @@ rule merge_giab_vcfs:
                     print('unrecognized chromosome ' + chrom)
                     sys.exit(1)
         with open(output[0], 'w') as out:
-            for line in vcf1.header:
+            for line in vcfTabList[0].header:
                 if not line.startswith('#CHROM'):
                     out.write(line + '\n')
                 line_list = line.split()
