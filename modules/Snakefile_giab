@@ -78,7 +78,7 @@ rule merge_giab_vcfs:
                 else:
                     check = chrom
                 if check.isdigit():
-                    vcfChromDict[check] = chrom
+                    vcfChromDict[int(check)] = chrom
                 elif check == 'X':
                     vcfChromDict[23] = chrom
                 elif check == 'Y':
