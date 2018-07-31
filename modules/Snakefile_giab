@@ -92,8 +92,8 @@ rule merge_giab_vcfs:
             for line in vcfTabList[0].header:
                 if not line.startswith('#CHROM'):
                     out.write(line + '\n')
-                line_list = line.split()
-                out.write('\t'.join(line_list[:8]) + '\n')
+            line_list = line.split()
+            out.write('\t'.join(line_list[:8]) + '\n')
             for num in sorted(vcfChromDict.keys()):
                 chrom = vcfChromDict[num]
                 posDict = {}
