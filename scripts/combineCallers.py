@@ -76,10 +76,10 @@ def outputAnnotated(callerList, snpOut, indelOut):
             outputSnp.write(line)
             outputIndel.write(line)
             line = f.readline()
-        outputSnp.write('##INFO=<ID=leftAlignSet,Number=.,Type=String,Description="list of variant callers that called variant, matched on left align trimmed VCF files">\n')
+        outputSnp.write('##INFO=<ID=leftAlignSet,Number=1,Type=Float,Description="number of callers in set where HC, HC-UG, FB-HC, FB-HC-UG, get 1.0, 2.0, 2.1, and 3.0 respectively.">\n')
         outputSnp.write('##INFO=<ID=hetAltAB,Number=1,Type=Float,Description="(ALT AD)/(TOT AD) summed at het sites.">\n')
         outputSnp.write(line)
-        outputIndel.write('##INFO=<ID=leftAlignSet,Number=.,Type=String,Description="list of variant callers that called variant, matched on left align trimmed VCF files">\n')
+        outputIndel.write('##INFO=<ID=leftAlignSet,Number=1,Type=Float,Description="number of callers in set where HC, HC-UG, FB-HC, FB-HC-UG, get 1.0, 2.0, 2.1, and 3.0 respectively.">\n')
         outputIndel.write('##INFO=<ID=hetAltAB,Number=1,Type=Float,Description="(ALT AD)/(TOT AD) summed at het sites.">\n')
         outputIndel.write(line)
         line = f.readline()
@@ -95,7 +95,18 @@ def outputAnnotated(callerList, snpOut, indelOut):
                 varDict = variantDictList[i]
                 if varDict.get((chrom, pos, ref, alt)):
                     callerSet.append(varCaller)
-            leftAlignSet = ','.join(sorted(callerSet))
+            callerStr = ','.join(sorted(callerSet))
+            if callerStr == 'HC':
+                leftAlignSet = '1.0'
+            elif callerStr == 'HC,UG':
+                leftAlignSet = '2.0'
+            elif callerStr == 'FB,HC':
+                leftAlignSet = '2.1'
+            elif callerStr == 'FB,HC,UG':
+                leftAlignSet = '3.0'
+            else:
+                print('unrecognized caller ' + callerStr)
+                sys.exit(1)
             format = line_list[8]
             genotypes = line_list[9:]
             hetAB = getHetAd(format, genotypes)
