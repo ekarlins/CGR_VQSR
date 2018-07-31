@@ -41,5 +41,6 @@ include: 'modules/Snakefile_giab'
 
 rule all:
     input:
+        expand('{varType}_combined/variants.vcf.gz.tbi', varType = VariantTypes),
         expand('GiabFP_{varType}_final/variants.vcf.gz.tbi', varType = VariantTypes)
 
