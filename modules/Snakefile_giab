@@ -13,8 +13,8 @@ rule select_giab_region:
         ref = config['REF']
     run:
         vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} -L {input.giab_bed} -o {output.indel} -sn ' + ' -sn '.join(vcfKeepSamps))
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} --excludeNonVariants -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} -L {input.giab_bed} --excludeNonVariants -o {output.indel} -sn ' + ' -sn '.join(vcfKeepSamps))
 
 
 
