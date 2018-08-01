@@ -30,8 +30,8 @@ rule select_giab_fp:
         module = 'module load GATK/3.8-1',
         ref = config['REF']
     run:
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} --discordance {input.giab_vcf} -o {output.snp}'
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} --discordance {input.giab_vcf} -o {output.indel}'
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} --discordance {input.giab_vcf} -o {output.snp}')
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} --discordance {input.giab_vcf} -o {output.indel}')
 
 
 rule combine_parts_giab:
