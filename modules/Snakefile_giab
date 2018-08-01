@@ -1,11 +1,28 @@
 #!/usr/bin/python
 
-rule select_giab_fp:
+rule select_giab_region:
     input:
         snp = 'SNP_parts/{part}.vcf',
         indel = 'INDEL_parts/{part}.vcf',
-        giab_vcf = getGiabVcf,
         giab_bed = getGiabBed
+    output:
+        snp = 'GiabRegion_SNP_parts_{giabSamp}/{part}.vcf',
+        indel = 'GiabRegion_INDEL_parts_{giabSamp}/{part}.vcf'
+    params:
+        module = 'module load GATK/3.8-1',
+        ref = config['REF']
+    run:
+        vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} -L {input.giab_bed} -o {output.indel} -sn ' + ' -sn '.join(vcfKeepSamps))
+
+
+
+rule select_giab_fp:
+    input:
+        snp = 'GiabRegion_SNP_parts_{giabSamp}/{part}.vcf',
+        indel = 'GiabRegion_INDEL_parts_{giabSamp}/{part}.vcf',
+        giab_vcf = getGiabVcf
     output:
         snp = 'GiabFP_SNP_parts_{giabSamp}/{part}.vcf',
         indel = 'GiabFP_INDEL_parts_{giabSamp}/{part}.vcf'
@@ -13,10 +30,9 @@ rule select_giab_fp:
         module = 'module load GATK/3.8-1',
         ref = config['REF']
     run:
-        vcfKeepSamps = GiabSampleDict[wildcards.giabSamp]
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.snp} -sn ' + ' -sn '.join(vcfKeepSamps))
-        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} -L {input.giab_bed} --discordance {input.giab_vcf} -o {output.indel} -sn ' + ' -sn '.join(vcfKeepSamps))
-        
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.snp} --discordance {input.giab_vcf} -o {output.snp}'
+        shell('{params.module};GATK -m 4g SelectVariants -R {params.ref} -V {input.indel} --discordance {input.giab_vcf} -o {output.indel}'
+
 
 rule combine_parts_giab:
     input:
